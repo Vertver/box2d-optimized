@@ -511,16 +511,16 @@ private:
   b2Vec2 m_force;
   float m_torque;
 
-  b2World* m_world;
-  b2Body* m_prev;
-  b2Body* m_next;
+  b2World* m_world = nullptr;
+  b2Body* m_prev = nullptr;
+  b2Body* m_next = nullptr;
 
-  b2Fixture* m_fixtureList;
+  b2Fixture* m_fixtureList = nullptr;
   int32 m_fixtureCount;
 
-  b2JointEdge* m_jointList;
+  b2JointEdge* m_jointList = nullptr;
 
-  b2Contact** m_contactList;
+  b2Contact** m_contactList = nullptr;
   int32 m_contactCount;
   int32 m_contactCapacity;
 

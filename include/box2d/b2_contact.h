@@ -187,32 +187,32 @@ protected:
 
   static b2EvaluateFunction* functions[b2Shape::e_typeCount][b2Shape::e_typeCount];
   
-  b2EvaluateFunction* m_evaluateFunction;
+  b2EvaluateFunction* m_evaluateFunction = nullptr;
 
   // World pool and list pointers.
-  b2Contact* m_prev;
-  b2Contact* m_next;
+  b2Contact* m_prev = nullptr;
+  b2Contact* m_next = nullptr;
 
-  b2Fixture* m_fixtureA;
-  b2Fixture* m_fixtureB;
+  b2Fixture* m_fixtureA = nullptr;
+  b2Fixture* m_fixtureB = nullptr;
 
-  b2Manifold m_manifold;
+  b2Manifold m_manifold = {};
 
-  uint32 m_flags;
+  uint32 m_flags = {};
 
-  int32 m_toiIndex;
+  int32 m_toiIndex = {};
 
 #ifdef ENABLE_FRICTION
-  float m_friction;
+  float m_friction = {};
 #endif // ENABLE_FRICTION
 
 #ifdef ENABLE_RESTITUTION
-  float m_restitution;
-  float m_restitutionThreshold;
+  float m_restitution = {};
+  float m_restitutionThreshold = {};
 #endif // ENABLE_RESTITUTION
 
 #ifdef ENABLE_TANGENT_SPEED
-  float m_tangentSpeed;
+  float m_tangentSpeed = {};
 #endif // ENABLE_TANGENT_SPEED
 };
 

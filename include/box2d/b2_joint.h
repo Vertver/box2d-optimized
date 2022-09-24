@@ -62,10 +62,10 @@ struct B2_API b2Jacobian
 /// nodes, one for each attached body.
 struct B2_API b2JointEdge
 {
-  b2Body* other;			///< provides quick access to the other body attached.
-  b2Joint* joint;			///< the joint
-  b2JointEdge* prev;		///< the previous joint edge in the body's joint list
-  b2JointEdge* next;		///< the next joint edge in the body's joint list
+  b2Body* other = nullptr;			///< provides quick access to the other body attached.
+  b2Joint* joint = nullptr;			///< the joint
+  b2JointEdge* prev = nullptr;		///< the previous joint edge in the body's joint list
+  b2JointEdge* next = nullptr;		///< the next joint edge in the body's joint list
 };
 
 /// Joint definitions are used to construct joints.
@@ -80,19 +80,19 @@ struct B2_API b2JointDef
   }
 
   /// The joint type is set automatically for concrete joint types.
-  b2JointType type;
+  b2JointType type = {};
 
   /// Use this to attach application specific data to your joints.
-  b2JointUserData userData;
+  b2JointUserData userData = {};
 
   /// The first attached body.
-  b2Body* bodyA;
+  b2Body* bodyA = nullptr;
 
   /// The second attached body.
-  b2Body* bodyB;
+  b2Body* bodyB = nullptr;
 
   /// Set this flag to true if the attached bodies should collide.
-  bool collideConnected;
+  bool collideConnected = false;
 };
 
 /// Utility to compute linear stiffness values from frequency and damping ratio

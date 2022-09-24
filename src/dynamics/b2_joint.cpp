@@ -96,6 +96,7 @@ b2Joint* b2Joint::Create(const b2JointDef* def, b2BlockAllocator* allocator)
   case e_distanceJoint:
     {
       void* mem = allocator->Allocate(sizeof(b2DistanceJoint));
+      memset(mem, 0, sizeof(b2DistanceJoint));
       joint = new (mem) b2DistanceJoint(static_cast<const b2DistanceJointDef*>(def));
     }
     break;
@@ -103,6 +104,7 @@ b2Joint* b2Joint::Create(const b2JointDef* def, b2BlockAllocator* allocator)
   case e_mouseJoint:
     {
       void* mem = allocator->Allocate(sizeof(b2MouseJoint));
+      memset(mem, 0, sizeof(b2MouseJoint));
       joint = new (mem) b2MouseJoint(static_cast<const b2MouseJointDef*>(def));
     }
     break;
@@ -110,6 +112,7 @@ b2Joint* b2Joint::Create(const b2JointDef* def, b2BlockAllocator* allocator)
   case e_prismaticJoint:
     {
       void* mem = allocator->Allocate(sizeof(b2PrismaticJoint));
+      memset(mem, 0, sizeof(b2PrismaticJoint));
       joint = new (mem) b2PrismaticJoint(static_cast<const b2PrismaticJointDef*>(def));
     }
     break;
@@ -117,6 +120,7 @@ b2Joint* b2Joint::Create(const b2JointDef* def, b2BlockAllocator* allocator)
   case e_revoluteJoint:
     {
       void* mem = allocator->Allocate(sizeof(b2RevoluteJoint));
+      memset(mem, 0, sizeof(b2RevoluteJoint));
       joint = new (mem) b2RevoluteJoint(static_cast<const b2RevoluteJointDef*>(def));
     }
     break;
@@ -124,6 +128,7 @@ b2Joint* b2Joint::Create(const b2JointDef* def, b2BlockAllocator* allocator)
   case e_pulleyJoint:
     {
       void* mem = allocator->Allocate(sizeof(b2PulleyJoint));
+      memset(mem, 0, sizeof(b2PulleyJoint));
       joint = new (mem) b2PulleyJoint(static_cast<const b2PulleyJointDef*>(def));
     }
     break;
@@ -131,6 +136,7 @@ b2Joint* b2Joint::Create(const b2JointDef* def, b2BlockAllocator* allocator)
   case e_gearJoint:
     {
       void* mem = allocator->Allocate(sizeof(b2GearJoint));
+      memset(mem, 0, sizeof(b2GearJoint));
       joint = new (mem) b2GearJoint(static_cast<const b2GearJointDef*>(def));
     }
     break;
@@ -138,6 +144,7 @@ b2Joint* b2Joint::Create(const b2JointDef* def, b2BlockAllocator* allocator)
   case e_wheelJoint:
     {
       void* mem = allocator->Allocate(sizeof(b2WheelJoint));
+      memset(mem, 0, sizeof(b2WheelJoint));
       joint = new (mem) b2WheelJoint(static_cast<const b2WheelJointDef*>(def));
     }
     break;
@@ -145,6 +152,7 @@ b2Joint* b2Joint::Create(const b2JointDef* def, b2BlockAllocator* allocator)
   case e_weldJoint:
     {
       void* mem = allocator->Allocate(sizeof(b2WeldJoint));
+      memset(mem, 0, sizeof(b2WeldJoint));
       joint = new (mem) b2WeldJoint(static_cast<const b2WeldJointDef*>(def));
     }
     break;
@@ -152,6 +160,7 @@ b2Joint* b2Joint::Create(const b2JointDef* def, b2BlockAllocator* allocator)
   case e_frictionJoint:
     {
       void* mem = allocator->Allocate(sizeof(b2FrictionJoint));
+      memset(mem, 0, sizeof(b2FrictionJoint));
       joint = new (mem) b2FrictionJoint(static_cast<const b2FrictionJointDef*>(def));
     }
     break;
@@ -159,6 +168,7 @@ b2Joint* b2Joint::Create(const b2JointDef* def, b2BlockAllocator* allocator)
   case e_motorJoint:
     {
       void* mem = allocator->Allocate(sizeof(b2MotorJoint));
+      memset(mem, 0, sizeof(b2MotorJoint));
       joint = new (mem) b2MotorJoint(static_cast<const b2MotorJointDef*>(def));
     }
     break;

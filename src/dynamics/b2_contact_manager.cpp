@@ -35,6 +35,7 @@ b2ContactManager::b2ContactManager() {
   m_allocator = nullptr;
   
   m_contactList = (b2Contact*) b2Alloc(1 * sizeof(b2Contact));
+  memset(m_contactList, 0, sizeof(b2Contact));
   m_contactList->m_next = m_contactList;
   m_contactList->m_prev = m_contactList;
   m_contactList->m_fixtureA = nullptr;

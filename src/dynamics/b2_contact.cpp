@@ -67,9 +67,11 @@ b2Contact* b2Contact::Create(b2Fixture* fixtureA, b2Fixture* fixtureB, b2BlockAl
   
   if (functions[type1][type2] != nullptr) {
     void* mem = allocator->Allocate(sizeof(b2Contact));
+    memset(mem, 0, sizeof(b2Contact));
     return new (mem) b2Contact(fixtureA, fixtureB, functions[type1][type2]);
   } else if (functions[type2][type1] != nullptr) {
     void* mem = allocator->Allocate(sizeof(b2Contact));
+    memset(mem, 0, sizeof(b2Contact));
     return new (mem) b2Contact(fixtureB, fixtureA, functions[type2][type1]);
   } else {
     return nullptr;

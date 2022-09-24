@@ -67,12 +67,12 @@ public:
 
   b2BroadPhase m_broadPhase;
   int32 m_contactCount;
-  b2ContactFilter* m_contactFilter;
-  b2ContactListener* m_contactListener;
-  b2BlockAllocator* m_allocator;
+  b2ContactFilter* m_contactFilter = nullptr;
+  b2ContactListener* m_contactListener = nullptr;
+  b2BlockAllocator* m_allocator = nullptr;
 
 private:
-  b2Contact* m_contactList;
+  b2Contact* m_contactList = nullptr;
 };
 
 inline b2Contact* b2ContactManager::Start() const {

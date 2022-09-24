@@ -242,10 +242,10 @@ protected:
   
   float m_density;
 
-  b2Fixture* m_next;
-  b2Body* m_body;
+  b2Fixture* m_next = nullptr;
+  b2Body* m_body = nullptr;
 
-  b2Shape* m_shape;
+  b2Shape* m_shape = nullptr;
   b2AABB m_aabb;
   
 #ifdef ENABLE_FRICTION
