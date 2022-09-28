@@ -44,7 +44,15 @@ public:
   void* Allocate(int32 size);
 
   /// Free memory. This will use b2Free if the size is larger than b2_maxBlockSize.
-  void Free(void* p, int32 size);
+  void FreeReal(void*& p, int32 size);
+
+  template<typename T>
+  void Free(T*& p, int32 size)
+  {
+      void* ptr = static_cast<void*>(p);
+      FreeReal(ptr, size);
+      p = nullptr;
+  }
 
   void Clear();
 

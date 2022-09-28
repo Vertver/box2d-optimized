@@ -51,7 +51,15 @@ public:
 
   void* Allocate(int32 size);
   void* Reallocate(void* p, int32 size);
-  void Free(void* p);
+  void FreeReal(void*& p);
+
+  template<typename T>
+  void Free(T*& p)
+  {
+      void* ptr = static_cast<void*>(p);
+      FreeReal(ptr);
+      p = nullptr;
+  }
 
   int32 GetMaxAllocation() const;
 

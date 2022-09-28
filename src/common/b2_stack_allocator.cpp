@@ -98,7 +98,7 @@ void* b2StackAllocator::Reallocate(void* p, int32 size)
   return entry->data;
 }
 
-void b2StackAllocator::Free(void* p)
+void b2StackAllocator::FreeReal(void*& p)
 {
   b2Assert(m_entryCount > 0);
   b2StackEntry* entry = m_entries + m_entryCount - 1;

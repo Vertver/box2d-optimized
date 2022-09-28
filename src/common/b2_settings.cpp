@@ -46,7 +46,7 @@ void* b2Alloc_Default(int32 size)
 void b2Free_Default(void* mem)
 {
 #ifdef MIMALLOC_ENABLED
-    return mi_free(mem);
+    mi_free(mem);
 #else
   free(mem);
 #endif

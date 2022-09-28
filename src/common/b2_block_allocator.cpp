@@ -20,6 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#define DONT_USE_BLOCK_ALLOCATOR
+
 #include "box2d/b2_block_allocator.h"
 #include <limits.h>
 #include <string.h>
@@ -93,7 +95,7 @@ b2BlockAllocator::b2BlockAllocator()
   m_chunkSpace = b2_chunkArrayIncrement;
   m_chunkCount = 0;
   m_chunks = (b2Chunk*)b2Alloc(m_chunkSpace * sizeof(b2Chunk));
-  
+
   memset(m_chunks, 0, m_chunkSpace * sizeof(b2Chunk));
   memset(m_freeLists, 0, sizeof(m_freeLists));
 }
@@ -110,6 +112,10 @@ b2BlockAllocator::~b2BlockAllocator()
 
 void* b2BlockAllocator::Allocate(int32 size)
 {
+#ifdef DONT_USE_BLOCK_ALLOCATOR
+  return b2Alloc(size);
+#endif
+
   if (size == 0)
   {
     return nullptr;
@@ -168,8 +174,12 @@ void* b2BlockAllocator::Allocate(int32 size)
   }
 }
 
-void b2BlockAllocator::Free(void* p, int32 size)
+void b2BlockAllocator::FreeReal(void*& p, int32 size)
 {
+#ifdef DONT_USE_BLOCK_ALLOCATOR
+    return b2Free(p);
+#endif
+
   if (size == 0)
   {
     return;
@@ -180,13 +190,14 @@ void b2BlockAllocator::Free(void* p, int32 size)
   if (size > b2_maxBlockSize)
   {
     b2Free(p);
+    p = nullptr;
     return;
   }
 
   int32 index = b2_sizeMap.values[size];
   b2Assert(0 <= index && index < b2_blockSizeCount);
 
-#if defined(_DEBUG)
+//#if defined(_DEBUG)
   // Verify the memory address and size is valid.
   int32 blockSize = b2_blockSizes[index];
   bool found = false;
@@ -210,7 +221,7 @@ void b2BlockAllocator::Free(void* p, int32 size)
   b2Assert(found);
 
   memset(p, 0xfd, blockSize);
-#endif
+//#endif
 
   b2Block* block = (b2Block*)p;
   block->next = m_freeLists[index];
