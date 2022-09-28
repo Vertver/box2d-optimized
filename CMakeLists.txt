@@ -8,6 +8,7 @@ project(box2d VERSION 2.4.1)
 set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 set(CMAKE_VISIBILITY_INLINES_HIDDEN ON)
 
+option(BOX2D_OPTICK "Build the Box2D with OptickCore" ON)
 option(BOX2D_BUILD_UNIT_TESTS "Build the Box2D unit tests" ON)
 option(BOX2D_BUILD_TESTBED "Build the Box2D testbed and benchmarks" ON)
 option(BOX2D_BUILD_DOCS "Build the Box2D documentation" OFF)

@@ -31,6 +31,10 @@
 #include "b2_island.h"
 #include "dynamics/b2_contact_solver.h"
 
+#ifdef OPTICK_ENABLED
+#include <optick.h>
+#endif
+
 /*
 Position Correction Notes
 =========================
@@ -253,6 +257,8 @@ void b2Island::SolveOrphan(b2Body* b, const b2TimeStep& step, const b2Vec2& grav
 void b2Island::Solve(const b2TimeStep& step, const b2Vec2& gravity, bool allowSleep) {
   float h = step.dt;
 
+  OPTICK_EVENT("b2Island::Solve")
+
   // Integrate velocities and apply damping. Initialize the body state.
   for (int32 i = 0; i < m_bodyCount; ++i)
   {
@@ -265,6 +271,7 @@ void b2Island::Solve(const b2TimeStep& step, const b2Vec2& gravity, bool allowSl
 
     if (b->m_type == b2_dynamicBody)
     {
+      OPTICK_EVENT("Integrate velocities.")
       // Integrate velocities.
 #ifdef ENABLE_GRAVITY_SCALE
       v += h * b->m_invMass * (b->m_gravityScale * b->m_mass * gravity + b->m_force);
@@ -302,8 +309,9 @@ void b2Island::Solve(const b2TimeStep& step, const b2Vec2& gravity, bool allowSl
   // Note that the contactSolver state is initialized conditionally if there are contacts
   // so we must 'guard' all uses of contactSolver with 'if (m_contactCount > 0) { ... }'
   b2ContactSolver contactSolver;
-  
+
   if (m_contactCount > 0) {
+    OPTICK_EVENT("contactSolver.Initialize")
     b2ContactSolverDef contactSolverDef;
     contactSolverDef.step = step;
     contactSolverDef.contacts = m_contacts;
@@ -311,35 +319,38 @@ void b2Island::Solve(const b2TimeStep& step, const b2Vec2& gravity, bool allowSl
     contactSolverDef.positions = m_positions;
     contactSolverDef.velocities = m_velocities;
     contactSolverDef.allocator = m_allocator;
-    
+
     contactSolver.Initialize(&contactSolverDef);
     contactSolver.InitializeVelocityConstraints();
-    
+
     if (step.warmStarting) {
       contactSolver.WarmStart();
     }
   }
-  
+
   for (int32 i = 0; i < m_jointCount; ++i) {
+    OPTICK_EVENT("InitVelocityConstraints")
     m_joints[i]->InitVelocityConstraints(solverData);
   }
 
   // Solve velocity constraints
-  
+
   if (m_contactCount > 0) {
+    OPTICK_EVENT("contactSolver.StoreImpulses()")
     for (int32 i = 0; i < step.velocityIterations; ++i)
     {
       for (int32 j = 0; j < m_jointCount; ++j)
       {
         m_joints[j]->SolveVelocityConstraints(solverData);
       }
-  
+
       contactSolver.SolveVelocityConstraints();
     }
-    
+
     // Store impulses for warm starting
     contactSolver.StoreImpulses();
   } else {
+    OPTICK_EVENT("SolveVelocityConstraints")
     for (int32 i = 0; i < step.velocityIterations; ++i)
     {
       for (int32 j = 0; j < m_jointCount; ++j)
@@ -348,10 +359,11 @@ void b2Island::Solve(const b2TimeStep& step, const b2Vec2& gravity, bool allowSl
       }
     }
   }
-  
+
   // Integrate positions
   for (int32 i = 0; i < m_bodyCount; ++i)
   {
+    OPTICK_EVENT("Integrate positions")
     b2Vec2 c = m_positions[i].c;
     float a = m_positions[i].a;
     b2Vec2 v = m_velocities[i].v;
@@ -385,50 +397,54 @@ void b2Island::Solve(const b2TimeStep& step, const b2Vec2& gravity, bool allowSl
   }
 
   // Solve position constraints
-  
+
   bool positionSolved = false;
-  
-  if (m_contactCount > 0) {
-    for (int32 i = 0; i < step.positionIterations; ++i)
+
     {
-      bool contactsOkay = contactSolver.SolvePositionConstraints();
+        OPTICK_EVENT("Solve position constraints")
+        if (m_contactCount > 0) {
+            for (int32 i = 0; i < step.positionIterations; ++i)
+            {
+                bool contactsOkay = contactSolver.SolvePositionConstraints();
 
-      bool jointsOkay = true;
-      for (int32 j = 0; j < m_jointCount; ++j)
-      {
-        bool jointOkay = m_joints[j]->SolvePositionConstraints(solverData);
-        jointsOkay = jointsOkay && jointOkay;
-      }
+                bool jointsOkay = true;
+                for (int32 j = 0; j < m_jointCount; ++j)
+                {
+                    bool jointOkay = m_joints[j]->SolvePositionConstraints(solverData);
+                    jointsOkay = jointsOkay && jointOkay;
+                }
 
-      if (contactsOkay && jointsOkay)
-      {
-        // Exit early if the position errors are small.
-        positionSolved = true;
-        break;
-      }
+                if (contactsOkay && jointsOkay)
+                {
+                    // Exit early if the position errors are small.
+                    positionSolved = true;
+                    break;
+                }
+            }
+        } else {
+            for (int32 i = 0; i < step.positionIterations; ++i)
+            {
+                bool jointsOkay = true;
+                for (int32 j = 0; j < m_jointCount; ++j)
+                {
+                    bool jointOkay = m_joints[j]->SolvePositionConstraints(solverData);
+                    jointsOkay = jointsOkay && jointOkay;
+                }
+
+                if (jointsOkay)
+                {
+                    // Exit early if the position errors are small.
+                    positionSolved = true;
+                    break;
+                }
+            }
+        }
     }
-  } else {
-    for (int32 i = 0; i < step.positionIterations; ++i)
-    {
-      bool jointsOkay = true;
-      for (int32 j = 0; j < m_jointCount; ++j)
-      {
-        bool jointOkay = m_joints[j]->SolvePositionConstraints(solverData);
-        jointsOkay = jointsOkay && jointOkay;
-      }
-
-      if (jointsOkay)
-      {
-        // Exit early if the position errors are small.
-        positionSolved = true;
-        break;
-      }
-    }
-  }
 
   // Copy state buffers back to the bodies
   for (int32 i = 0; i < m_bodyCount; ++i)
   {
+    OPTICK_EVENT("Copy state buffers back to the bodies")
     b2Body* body = m_bodies[i];
     body->m_sweep.c = m_positions[i].c;
     body->m_sweep.a = m_positions[i].a;
@@ -438,12 +454,13 @@ void b2Island::Solve(const b2TimeStep& step, const b2Vec2& gravity, bool allowSl
   }
 
   if (m_contactCount > 0) {
-    Report(contactSolver.m_velocityConstraints);	
+    Report(contactSolver.m_velocityConstraints);
   }
 
 #ifdef ENABLE_SLEEPING
   if (allowSleep)
   {
+    OPTICK_EVENT("allowSleep")
     float minSleepTime = b2_maxFloat;
 
     const float linTolSqr = b2_linearSleepTolerance * b2_linearSleepTolerance;
@@ -485,6 +502,7 @@ void b2Island::Solve(const b2TimeStep& step, const b2Vec2& gravity, bool allowSl
 
 void b2Island::SolveTOI(const b2TimeStep& subStep, int32 toiIndexA, int32 toiIndexB)
 {
+  OPTICK_EVENT("SolveTOI")
   b2Assert(toiIndexA < m_bodyCount);
   b2Assert(toiIndexB < m_bodyCount);
 
@@ -630,7 +648,7 @@ void b2Island::Report(const b2ContactVelocityConstraint* constraints)
     b2Contact* c = m_contacts[i];
 
     const b2ContactVelocityConstraint* vc = constraints + i;
-    
+
     b2ContactImpulse impulse;
     impulse.count = vc->pointCount;
     for (int32 j = 0; j < vc->pointCount; ++j)

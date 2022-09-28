@@ -27,17 +27,29 @@
 #include <stdarg.h>
 #include <stdlib.h>
 
+#ifdef MIMALLOC_ENABLED
+#include <mimalloc.h>
+#endif
+
 b2Version b2_version = {2, 4, 0};
 
 // Memory allocators. Modify these to use your own allocator.
 void* b2Alloc_Default(int32 size)
 {
+#ifdef MIMALLOC_ENABLED
+  return mi_malloc(size);
+#else
   return malloc(size);
+#endif
 }
 
 void b2Free_Default(void* mem)
 {
+#ifdef MIMALLOC_ENABLED
+    return mi_free(mem);
+#else
   free(mem);
+#endif
 }
 
 // You can modify this to use your logging facility.

@@ -113,6 +113,12 @@ set_target_properties(box2d PROPERTIES
     SOVERSION ${PROJECT_VERSION_MAJOR}
 )
 
+if (MIMALLOC_ENABLED)
+	target_link_libraries(box2d PRIVATE OptickCore mimalloc-static)
+else()
+	target_link_libraries(box2d PRIVATE OptickCore)
+endif()
+
 if(MSVC)
   set_target_properties(box2d PROPERTIES
     COMPILE_PDB_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
