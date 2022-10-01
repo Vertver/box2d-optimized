@@ -565,7 +565,6 @@ void b2World::Solve(const b2TimeStep& step)
 
     // Perform a depth first search (DFS) on the constraint graph.
     while (stackCount > 0) {
-      OPTICK_EVENT("constraint graph DFS")
       // Grab the next body off the stack and add it to the island.
       b2Body* b = stack[--stackCount];
       b2Assert(b->IsEnabled() == true);
@@ -583,7 +582,6 @@ void b2World::Solve(const b2TimeStep& step)
 
       // Search all contacts connected to this body.
       for (int32 i = 0; i < b->GetContactCount(); ++i) {
-        OPTICK_EVENT("Search all contacts")
         b2Contact* contact = b->GetContact(i);
 
         // Has this contact already been added to an island?
@@ -655,7 +653,6 @@ void b2World::Solve(const b2TimeStep& step)
       }
     }
 
-    OPTICK_EVENT("island.Solve")
     island.Solve(step, m_gravity, m_allowSleep);
 
     // Post solve cleanup.
