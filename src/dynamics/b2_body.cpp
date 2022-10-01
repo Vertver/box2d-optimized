@@ -139,11 +139,11 @@ void b2Body::SetType(b2BodyType type)
 
   if (m_type == b2_staticBody || type == b2_staticBody) {
     m_world->m_contactManager.m_broadPhase.InvalidateStaticBodies();
-    
+
     // since the world list is split into two groups with static and non static bodies
     // If the body type changes we must remove and re-insert the body in the correct group
     // Code below is copied from world CreateBody and DestroyBody accordingly
-    
+
     // Remove world body list.
     if (m_prev) {
       m_prev->m_next = m_next;
@@ -160,29 +160,29 @@ void b2Body::SetType(b2BodyType type)
     if (this == m_world->m_bodyListTail) {
       m_world->m_bodyListTail = m_prev;
     }
-    
+
     // Add to world doubly linked list in the correct group.
     if (type == b2_staticBody) {
       m_prev = m_world->m_bodyListTail;
       m_next = nullptr;
-      
+
       if (m_world->m_bodyListTail) {
         m_world->m_bodyListTail->m_next = this;
       } else {
         m_world->m_bodyListHead = this;
       }
-      
+
       m_world->m_bodyListTail = this;
     } else {
       m_prev = nullptr;
       m_next = m_world->m_bodyListHead;
-      
+
       if (m_world->m_bodyListHead) {
         m_world->m_bodyListHead->m_prev = this;
       } else {
         m_world->m_bodyListTail = this;
       }
-      
+
       m_world->	m_bodyListHead = this;
     }
   }
@@ -211,7 +211,7 @@ void b2Body::SetType(b2BodyType type)
   for (int32 i = 0; i < m_contactCount; ++i) {
     m_world->m_contactManager.Destroy(m_contactList[i]);
   }
-  
+
   m_contactCount = 0;
 
   // Touch the proxies so that new contacts will be created (when appropriate)
@@ -252,7 +252,7 @@ b2Fixture* b2Body::CreateFixture(const b2FixtureDef* def)
   {
     ResetMassData();
   }
-  
+
   if (m_flags & e_enabledFlag)
   {
     b2BroadPhase* broadPhase = &m_world->m_contactManager.m_broadPhase;
@@ -260,7 +260,7 @@ b2Fixture* b2Body::CreateFixture(const b2FixtureDef* def)
     broadPhase->Add(fixture);
     //fixture->CreateProxies(broadPhase, m_xf);
   }
-  
+
   // Let the world know we have a new fixture. This will cause new contacts
   // to be created at the beginning of the next time step.
   m_world->m_newContacts = true;
@@ -322,7 +322,7 @@ void b2Body::DestroyFixture(b2Fixture* fixture)
       // This destroys the contact and removes it from
       // this body's contact list.
       m_world->m_contactManager.Destroy(c);
-      
+
       m_contactCount--;
       m_contactList[i] = m_contactList[m_contactCount];
       i--;
@@ -498,7 +498,7 @@ void b2Body::SetTransform(const b2Vec2& position, float angle)
   m_sweep.a0 = angle;
 
   UpdateAABBs();
-  
+
   // Check for new contacts the next step
   m_world->m_newContacts = true;
 }
@@ -523,7 +523,7 @@ void b2Body::SetEnabled(bool flag)
     m_flags |= e_enabledFlag;
 
     // Create all proxies.
-    // TODO 
+    // TODO
     /*b2BroadPhase* broadPhase = &m_world->m_contactManager.m_broadPhase;
     for (b2Fixture* f = m_fixtureList; f; f = f->m_next)
     {
@@ -590,6 +590,15 @@ void b2Body::AddContact(b2Contact* c) {
   }
 
   m_contactList[m_contactCount++] = c;
+}
+
+void
+b2Body::ClearContacts()
+{
+    m_contactCapacity = 0;
+    m_contactCount = 0;
+    b2Free(m_contactList);
+    m_contactList = nullptr;
 }
 
 void b2Body::Dump()

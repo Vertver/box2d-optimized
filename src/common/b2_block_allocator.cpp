@@ -20,8 +20,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#define DONT_USE_BLOCK_ALLOCATOR
-
 #include "box2d/b2_block_allocator.h"
 #include <limits.h>
 #include <string.h>

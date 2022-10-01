@@ -429,6 +429,7 @@ public:
   b2Contact* GetContact(int32 idx);
   const b2Contact* GetContact(int32 idx) const;
   void AddContact(b2Contact* c);
+  void ClearContacts();
 
   /// Get the next body in the world's body list.
   b2Body* GetNext();
@@ -442,7 +443,7 @@ public:
   /// Get the parent world of this body.
   b2World* GetWorld();
   const b2World* GetWorld() const;
-  
+
   void UpdateAABBs();
 
   /// Dump this body to a file
@@ -468,7 +469,7 @@ private:
   friend class b2RopeJoint;
   friend class b2WeldJoint;
   friend class b2WheelJoint;
-  
+
   friend class b2ParticleSystem;
   friend class b2ParticleGroup;
 
@@ -486,7 +487,7 @@ private:
 
   b2Body(const b2BodyDef* bd, b2World* world);
   ~b2Body();
-  
+
   void SynchronizeTransform();
 
   // This is used to prevent connected bodies from colliding.

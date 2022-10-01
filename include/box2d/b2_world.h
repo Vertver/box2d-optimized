@@ -128,7 +128,7 @@ public:
         int32 velocityIterations,
         int32 positionIterations,
         int32 particleIterations);
-  
+
   /// Take a time step. This performs collision detection, integration,
   /// and constraint solution.
   /// @param timeStep the amount of time to simulate, this should not vary.
@@ -140,7 +140,7 @@ public:
   {
     Step(timeStep, velocityIterations, positionIterations, 1);
   }
-  
+
   /// Manually clear the force buffer on all bodies. By default, forces are cleared automatically
   /// after each call to Step. The default behavior is modified by calling SetAutoClearForces.
   /// The purpose of this function is to support sub-stepping. Sub-stepping is often used to maintain
@@ -243,7 +243,7 @@ public:
   void ShiftOrigin(const b2Vec2& newOrigin);
 
   /// Get the contact manager for testing.
-  const b2ContactManager& GetContactManager() const;
+  b2ContactManager& GetContactManager();
 
   /// Get the current profile.
   const b2Profile& GetProfile() const;
@@ -258,7 +258,7 @@ private:
   friend class b2Fixture;
   friend class b2ContactManager;
   friend class b2Controller;
-  
+
   friend class b2ParticleSystem;
 
   void RemoveDeadContacts();
@@ -280,7 +280,7 @@ private:
   b2Body* m_bodyListTail;
   b2Joint* m_jointList;
   b2ParticleSystem* m_particleSystemList;
-  
+
   int32 m_bodyCount;
   int32 m_jointCount;
 
@@ -398,7 +398,7 @@ inline bool b2World::GetAutoClearForces() const
   return m_clearForces;
 }
 
-inline const b2ContactManager& b2World::GetContactManager() const
+inline b2ContactManager& b2World::GetContactManager()
 {
   return m_contactManager;
 }
