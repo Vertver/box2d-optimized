@@ -1150,7 +1150,6 @@ void b2World::SolveTOI(const b2TimeStep& step) {
 
 void b2World::Step(float dt, int32 velocityIterations, int32 positionIterations, int32 particleIterations)
 {
-  OPTICK_FRAME("Box2D Step")
   OPTICK_EVENT("Box2D Step")
   b2Timer stepTimer;
   m_locked = true;
