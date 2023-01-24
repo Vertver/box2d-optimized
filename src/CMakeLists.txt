@@ -114,9 +114,15 @@ set_target_properties(box2d PROPERTIES
 )
 
 if (MIMALLOC_ENABLED)
-	target_link_libraries(box2d PRIVATE OptickCore mimalloc-static)
+	if (ARKANE_OPTICK)
+	  target_link_libraries(box2d PRIVATE OptickCore mimalloc-static)
+  else()
+	  target_link_libraries(box2d PRIVATE mimalloc-static)
+  endif()
 else()
-	target_link_libraries(box2d PRIVATE OptickCore)
+	if (ARKANE_OPTICK)
+	  target_link_libraries(box2d PRIVATE OptickCore)
+  endif()
 endif()
 
 if(MSVC)
