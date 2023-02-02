@@ -304,7 +304,7 @@ void b2BroadPhase::UpdateAndQuery(T* callback) {
   while (m_bufferStack != nullptr) {
     // A consistency guarantee that the stack was used correctly.  
     // #TODO: fixme
-    //b2Assert(m_bufferStack->index <= 0);
+    b2Assert(m_bufferStack->index <= 0);
 
     b2BufferFrame* prev = m_bufferStack->prev;
     b2Free(m_bufferStack->buffer);
